@@ -704,8 +704,26 @@ body {
   .app-main { display: block; padding: 0; }
   .preview-wrap { padding: 0; }
   .card { box-shadow: none; page-break-inside: avoid; }
-  .card-watermark { display: none !important; } /* 인쇄 시 워터마크 제거 */
+  .card-watermark { display: none !important; }
 }
+/* 포스트잇(76×95mm) 인쇄 모드 */
+@media print {
+  body.print-postit {
+    margin: 0; padding: 0;
+  }
+  body.print-postit .card {
+    width: 76mm;
+    height: 95mm;
+    border-radius: 4px;
+    font-size: 10px;
+  }
+  body.print-postit .card-recipient { font-size: 14px; margin-bottom: 8px; }
+  body.print-postit .card-message   { font-size: 10px; line-height: 1.55; }
+  body.print-postit .card-eyebrow   { font-size: 7px; }
+  body.print-postit .card-signature { font-size: 8px; }
+  body.print-postit .card-content   { padding: 14px 12px 10px; }
+}
+@page postit { size: 76mm 95mm; margin: 0; }
 
 /* ---------- 접근성 ---------- */
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -884,10 +902,17 @@ body {
       <div class="actions">
         <button class="btn btn-primary" id="btnDownload" type="button">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          PNG로 다운로드 (1080×1350)
+          PNG 다운로드 (1080×1350)
+        </button>
+        <button class="btn btn-secondary" id="btnDownloadPostit" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          포스트잇 PNG (304×380)
         </button>
         <div class="btn-row">
-          <button class="btn btn-secondary" id="btnPrint" type="button">🖨 인쇄</button>
+          <button class="btn btn-secondary" id="btnPrint" type="button">🖨 A4 인쇄</button>
+          <button class="btn btn-secondary" id="btnPrintPostit" type="button">🗒 포스트잇 인쇄</button>
+        </div>
+        <div class="btn-row">
           <button class="btn btn-secondary" id="btnReset" type="button">↺ 새로 만들기</button>
         </div>
       </div>
@@ -902,7 +927,7 @@ body {
 
 <!-- 푸터 -->
 <footer class="app-footer">
-  <p>🌹 스승의 날 응원 카드 메이커 · v1.3</p>
+  <p>🌹 스승의 날 응원 카드 메이커 · v1.4</p>
   <p>made with ♥ by <a href="https://www.youtube.com/@coolhanman" target="_blank" rel="noopener">룰루랄라 한기쌤</a> · <a href="https://github.com/plusiam/carnation-card" target="_blank" rel="noopener">GitHub</a></p>
 </footer>
 
@@ -1436,9 +1461,11 @@ function bindEvents() {
 
   // 다운로드
   btnDownload.addEventListener('click', downloadPNG);
+  $('btnDownloadPostit').addEventListener('click', downloadPostitPNG);
 
   // 인쇄
   btnPrint.addEventListener('click', () => window.print());
+  $('btnPrintPostit').addEventListener('click', printPostit);
 
   // 초기화
   btnReset.addEventListener('click', () => {
@@ -1473,53 +1500,84 @@ function bindEvents() {
   });
 }
 
-// ===== PNG 다운로드 =====
+// ===== PNG 다운로드 공통 =====
+async function captureCard(scale) {
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+  await new Promise(r => setTimeout(r, 100));
+  return html2canvas(card, {
+    scale,
+    useCORS: true,
+    backgroundColor: null,
+    logging: false,
+    width: 360,
+    height: 450,
+    ignoreElements: (el) => el.classList && el.classList.contains('card-watermark'),
+  });
+}
+
+function recipientFilename() {
+  return (inpRecipient.value || '선생님').trim().replace(/[\\/:*?"<>|\x00-\x1f]/g, '').slice(0, 50) || '선생님';
+}
+
+// 인스타 사이즈 (1080×1350)
 async function downloadPNG() {
   if (!inpMessage.value.trim()) {
     showToast('메시지를 먼저 작성해 주세요');
-    inpMessage.focus();
+    inpMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
-
   btnDownload.disabled = true;
   const originalText = btnDownload.innerHTML;
   btnDownload.innerHTML = '🌹 카드 만드는 중...';
-
   try {
-    // 폰트 로딩 완료 대기 (한글 깨짐 방지)
-    if (document.fonts && document.fonts.ready) {
-      await document.fonts.ready;
-    }
-    // 폰트 적용 안정화 대기
-    await new Promise(r => setTimeout(r, 100));
-
-    // 360 → 1080 = 3배 캡처
-    // PNG 다운로드 시 워터마크는 캡처에서 제외 (web에는 표시, 출력물에는 미표시)
-    const canvas = await html2canvas(card, {
-      scale: 3,
-      useCORS: true,
-      backgroundColor: null,
-      logging: false,
-      width: 360,
-      height: 450,
-      ignoreElements: (el) => el.classList && el.classList.contains('card-watermark'),
-    });
-
-    // 다운로드
-    const recipient = (inpRecipient.value || '선생님').trim().replace(/[\\/:*?"<>|]/g, '');
-    const filename = `스승의날_응원카드_${recipient}.png`;
+    const canvas = await captureCard(3);
     const link = document.createElement('a');
-    link.download = filename;
+    link.download = `스승의날_응원카드_${recipientFilename()}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
     showToast('카드를 저장했어요 🌹');
   } catch (err) {
     console.error(err);
-    showToast('저장 중 오류가 났어요. 다시 시도해 주세요.');
+    showToast('저장 중 오류가 났어요. 인쇄 버튼을 이용해 보세요.');
   } finally {
     btnDownload.disabled = false;
     btnDownload.innerHTML = originalText;
   }
+}
+
+// 포스트잇 사이즈 (304×380 — 76mm×95mm @4x)
+async function downloadPostitPNG() {
+  if (!inpMessage.value.trim()) {
+    showToast('메시지를 먼저 작성해 주세요');
+    inpMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  const btn = $('btnDownloadPostit');
+  btn.disabled = true;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '🌹 만드는 중...';
+  try {
+    // scale 약 0.844 → 360*0.844≈304px, 450*0.844≈380px (76mm×95mm @96dpi)
+    const canvas = await captureCard(304 / 360);
+    const link = document.createElement('a');
+    link.download = `스승의날_포스트잇_${recipientFilename()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('포스트잇 카드를 저장했어요 🗒');
+  } catch (err) {
+    console.error(err);
+    showToast('저장 중 오류가 났어요. 다시 시도해 주세요.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
+// 포스트잇 인쇄 (76×95mm 페이지)
+function printPostit() {
+  document.body.classList.add('print-postit');
+  window.print();
+  document.body.classList.remove('print-postit');
 }
 
 // ===== 토스트 =====

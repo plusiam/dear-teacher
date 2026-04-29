@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>스승의 날 응원 카드 메이커 🌹 | 룰루랄라 한기쌤</title>
+<meta name="description" content="제자가 선생님께 마음을 전하는 스승의 날 응원 카드를 1분 만에 만들어 PNG로 다운로드하세요. 카네이션 클래식, 손편지 노트, 파스텔 봄, 별빛 감사 4가지 테마." />
+<meta name="theme-color" content="#D63341" />
+<meta property="og:title" content="스승의 날 응원 카드 메이커 🌹" />
+<meta property="og:description" content="제자가 선생님께 마음을 전하는 카드를 1분 만에 만들어 보세요." />
+<meta property="og:type" content="website" />
+
+<!-- 한글 손글씨 폰트 (메시지용) + 본문 폰트 -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Pen+Script&family=Hi+Melody&family=Single+Day&family=East+Sea+Dokdo&family=Cute+Font&family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+
+<!-- 카드 PNG 캡처 라이브러리 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+/* ========================================================
+   스승의 날 응원 카드 메이커
+   - 단일 HTML, GitHub Pages 배포
+   - 4가지 테마: carnation / letter / pastel / night
+   - made with 룰루랄라 한기쌤
+   ======================================================== */
+
+/* ---------- 리셋 ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, textarea, select { font-family: inherit; font-size: inherit; }
+textarea { resize: vertical; }
+
+/* ---------- 디자인 토큰 ---------- */
+:root {
+  --bg: #fdf9f3;
+  --surface: #ffffff;
+  --border: #ebe1cf;
+  --border-strong: #d8c9af;
+  --text: #2a2a2a;
+  --text-soft: #6b6b6b;
+  --text-mute: #9a9a9a;
+  --accent: #d63341;       /* 카네이션 빨강 */
+  --accent-deep: #a72431;
+  --accent-soft: #fce8ea;
+  --green: #4a7c59;
+  --gold: #c9a35a;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 8px 24px rgba(45,25,15,0.08);
+  --shadow-lg: 0 24px 48px rgba(45,25,15,0.14);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+}
+
+body {
+  font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+  background:
+    radial-gradient(ellipse 800px 400px at 10% 0%, #fff5ec 0%, transparent 70%),
+    radial-gradient(ellipse 600px 600px at 90% 100%, #ffeef0 0%, transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------- 헤더 ---------- */
+.app-header {
+  text-align: center;
+  padding: 36px 20px 20px;
+}
+.brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-soft);
+  letter-spacing: 0.02em;
+  background: var(--surface);
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.app-title {
+  font-family: "Jua", sans-serif;
+  font-size: clamp(26px, 5vw, 40px);
+  margin: 0 0 6px;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+.app-title .red { color: var(--accent); }
+.app-subtitle {
+  font-size: 14px;
+  color: var(--text-soft);
+  margin: 0;
+  padding: 0 16px;
+}
+
+/* ---------- 메인 레이아웃 ---------- */
+.app-main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 16px 20px 60px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 980px) {
+  .app-main {
+    grid-template-columns: 1fr 1.05fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .preview-side { position: sticky; top: 24px; }
+}
+/* 모바일: 미리보기를 컨트롤 위로 */
+@media (max-width: 979px) {
+  .preview-side { order: -1; }
+}
+
+/* ---------- 패널 공통 ---------- */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+.panel-section + .panel-section {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px dashed var(--border);
+}
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-soft);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label .num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+/* ---------- 폼 컨트롤 ---------- */
+.field { display: block; margin-bottom: 12px; }
+.field:last-child { margin-bottom: 0; }
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.field-label .hint {
+  color: var(--text-mute);
+  font-size: 11px;
+  font-weight: 400;
+  margin-left: 4px;
+}
+.input, .textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: #fdfaf3;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.input:focus, .textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(214,51,65,0.12);
+}
+.textarea { min-height: 96px; line-height: 1.55; }
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.char-counter {
+  text-align: right;
+  font-size: 11px;
+  color: var(--text-mute);
+  margin-top: 4px;
+}
+.char-counter.is-over { color: var(--accent); font-weight: 600; }
+
+/* ---------- 테마 선택 그리드 ---------- */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+@media (min-width: 520px) {
+  .theme-grid { grid-template-columns: repeat(4, 1fr); }
+}
+.theme-card {
+  position: relative;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  background: var(--surface);
+  transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+  text-align: center;
+}
+.theme-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+.theme-card.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(214,51,65,0.12);
+}
+.theme-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+.theme-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+/* 썸네일 색상 (각 테마 미리보기) */
+.theme-thumb--carnation { background: linear-gradient(135deg, #fff5ec, #fce8ea); }
+.theme-thumb--letter    { background: repeating-linear-gradient(180deg, #f5edd7 0, #f5edd7 9px, #e5d9ba 9px, #e5d9ba 10px); }
+.theme-thumb--pastel    { background: linear-gradient(135deg, #ffe5ec, #e5f0ff); }
+.theme-thumb--night     { background: linear-gradient(135deg, #1b2845, #2d4373); color: #ffd700; }
+
+/* ---------- 메시지 추천 박스 ---------- */
+.suggest-box {
+  margin-top: 14px;
+  padding: 14px;
+  background: linear-gradient(135deg, #fff8ed 0%, #fce8ea 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.suggest-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-deep);
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.filter-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.filter-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-soft);
+  letter-spacing: 0.04em;
+  margin-right: 2px;
+  width: 28px;
+  flex-shrink: 0;
+}
+.chip {
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-soft);
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  transition: all 0.15s;
+}
+.chip:hover { color: var(--accent); border-color: var(--accent); }
+.chip.is-active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  font-weight: 600;
+}
+.btn-suggest {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--accent);
+  color: white;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(214,51,65,0.25);
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-suggest:hover { background: var(--accent-deep); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(214,51,65,0.35); }
+.btn-suggest:active { transform: translateY(0); }
+.suggestion-result {
+  margin-top: 10px;
+  padding: 14px 14px 10px;
+  background: white;
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius-md);
+  animation: pop-in 0.25s ease;
+  display: none;
+}
+.suggestion-result.is-visible { display: block; }
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.96) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.suggestion-text {
+  font-family: "Gaegu", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  margin: 0 0 10px;
+  white-space: pre-wrap;
+  word-break: keep-all;
+}
+.suggestion-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.btn-mini {
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s;
+}
+.btn-mini-primary {
+  background: var(--accent);
+  color: white;
+}
+.btn-mini-primary:hover { background: var(--accent-deep); }
+.btn-mini-ghost {
+  background: #fdfaf3;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-mini-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.tweak-hint {
+  font-size: 12px;
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  margin-top: 8px;
+  display: none;
+  animation: fade-in 0.3s ease;
+}
+.tweak-hint.is-visible { display: block; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.example-list-detail {
+  margin-top: 10px;
+}
+.example-list-detail summary {
+  font-size: 12px;
+  color: var(--text-soft);
+  cursor: pointer;
+  padding: 6px 0;
+  list-style: none;
+  user-select: none;
+}
+.example-list-detail summary::-webkit-details-marker { display: none; }
+.example-list-detail summary::before {
+  content: "▸ ";
+  display: inline-block;
+  transition: transform 0.15s;
+}
+.example-list-detail[open] summary::before { transform: rotate(90deg); }
+.example-list-detail summary:hover { color: var(--accent); }
+.example-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+.example-item {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: all 0.15s;
+  white-space: pre-wrap;
+  word-break: keep-all;
+}
+.example-item:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  transform: translateX(2px);
+}
+
+/* ---------- 폰트 선택 (가로 스크롤) ---------- */
+.font-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+@media (min-width: 520px) {
+  .font-grid { grid-template-columns: repeat(6, 1fr); }
+}
+.font-btn {
+  padding: 12px 6px;
+  font-size: 16px;
+  background: #fdfaf3;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  transition: all 0.15s;
+  text-align: center;
+}
+.font-btn:hover { border-color: var(--border-strong); }
+.font-btn.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.font-name {
+  display: block;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 10px;
+  color: var(--text-mute);
+  margin-top: 2px;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- 데코 토글 ---------- */
+.deco-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.deco-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  background: #fdfaf3;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.deco-toggle:hover { border-color: var(--border-strong); }
+.deco-toggle.is-active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-deep);
+  font-weight: 600;
+}
+
+/* ---------- 카드 미리보기 ---------- */
+.preview-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.preview-stage {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  justify-content: center;
+}
+
+/* 카드 본체 - 고정 360x450 (3배 캡처해서 1080x1350 출력) */
+.card {
+  width: 360px;
+  height: 450px;
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  transition: background 0.3s ease;
+  /* 캡처 시 여백 줄이기 */
+  flex-shrink: 0;
+}
+@media (max-width: 400px) {
+  .preview-stage { transform: scale(0.92); transform-origin: top center; }
+}
+
+.card-content {
+  position: absolute;
+  inset: 0;
+  padding: 38px 32px 30px;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+}
+.card-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+  font-weight: 600;
+  opacity: 0.7;
+}
+.card-recipient {
+  font-family: "Jua", sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  margin: 0 0 18px;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+.card-message {
+  flex: 1;
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  /* 메시지 폰트는 JS에서 동적 적용 */
+}
+.card-signature {
+  margin-top: 16px;
+  text-align: right;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+.card-signature .from-name {
+  font-family: "Jua", sans-serif;
+  font-size: 14px;
+  display: block;
+  margin-top: 2px;
+  opacity: 1;
+}
+.card-watermark {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  opacity: 0.3;
+  font-family: "Noto Sans KR", sans-serif;
+  font-weight: 400;
+  z-index: 3;
+}
+
+/* 카드 데코 레이어 */
+.card-deco {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ====== 테마: 카네이션 클래식 ====== */
+.card[data-theme="carnation"] {
+  background: linear-gradient(180deg, #fff8ed 0%, #fbeee4 100%);
+  color: #4a2820;
+}
+.card[data-theme="carnation"] .card-eyebrow { color: #a72431; }
+.card[data-theme="carnation"] .card-recipient { color: #6b1d24; }
+.card[data-theme="carnation"] .card-content {
+  border: 1px solid rgba(214,51,65,0.18);
+  border-radius: 14px;
+  margin: 14px;
+  padding: 30px 28px 24px;
+  inset: 0;
+  background: rgba(255,253,248,0.4);
+  backdrop-filter: blur(0.5px);
+}
+
+/* ====== 테마: 손편지 노트 ====== */
+.card[data-theme="letter"] {
+  background:
+    repeating-linear-gradient(180deg, transparent 0, transparent 31px, rgba(180,150,90,0.18) 31px, rgba(180,150,90,0.18) 32px),
+    linear-gradient(180deg, #f7eeda 0%, #efe4c7 100%);
+  color: #3a2a18;
+}
+.card[data-theme="letter"] .card-eyebrow { color: #8a5a2a; }
+.card[data-theme="letter"] .card-recipient { color: #5a3a1a; }
+.card[data-theme="letter"] .card-content { padding: 36px 30px 28px; }
+
+/* ====== 테마: 파스텔 봄 ====== */
+.card[data-theme="pastel"] {
+  background: linear-gradient(135deg, #ffe5ec 0%, #f0e5ff 50%, #e5f0ff 100%);
+  color: #4a3a4a;
+}
+.card[data-theme="pastel"] .card-eyebrow { color: #c25a8a; }
+.card[data-theme="pastel"] .card-recipient { color: #8a3a6a; }
+
+/* ====== 테마: 별빛 감사 ====== */
+.card[data-theme="night"] {
+  background: radial-gradient(ellipse at top, #2d4373 0%, #1b2845 70%, #0f1730 100%);
+  color: #f0e8d0;
+}
+.card[data-theme="night"] .card-eyebrow { color: #c9a35a; letter-spacing: 0.22em; }
+.card[data-theme="night"] .card-recipient { color: #ffd700; }
+.card[data-theme="night"] .card-watermark { color: #ffd700; opacity: 0.4; }
+
+/* ---------- 액션 버튼 ---------- */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 360px;
+}
+.btn {
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -0.01em;
+}
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 4px 14px rgba(214,51,65,0.3);
+}
+.btn-primary:hover { background: var(--accent-deep); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.5; cursor: wait; transform: none; }
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--border-strong); background: #fdfaf3; }
+.btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* ---------- 토스트 ---------- */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  background: #2a2a2a;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.is-visible { transform: translateX(-50%) translateY(0); }
+
+/* ---------- 푸터 ---------- */
+.app-footer {
+  text-align: center;
+  padding: 30px 20px 50px;
+  font-size: 12px;
+  color: var(--text-mute);
+}
+.app-footer a {
+  color: var(--text-soft);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--text-mute);
+}
+.app-footer a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---------- 인쇄 스타일 ---------- */
+@media print {
+  body { background: white; }
+  .app-header, .app-footer, .control-side, .actions { display: none !important; }
+  .app-main { display: block; padding: 0; }
+  .preview-wrap { padding: 0; }
+  .card { box-shadow: none; page-break-inside: avoid; }
+  .card-watermark { display: none !important; } /* 인쇄 시 워터마크 제거 */
+}
+
+/* ---------- 접근성 ---------- */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ========== 헤더 ========== -->
+<header class="app-header">
+  <div class="brand-pill">🌹 made with 룰루랄라 한기쌤</div>
+  <h1 class="app-title">스승의 날 <span class="red">응원 카드</span> 만들기</h1>
+  <p class="app-subtitle">선생님께 마음을 담아 — 1분 안에 만들어 PNG로 받으세요</p>
+</header>
+
+<!-- ========== 메인 ========== -->
+<main class="app-main">
+
+  <!-- ===== 컨트롤 패널 (왼쪽) ===== -->
+  <section class="control-side">
+    <div class="panel">
+
+      <!-- ① 테마 -->
+      <div class="panel-section">
+        <h2 class="section-label"><span class="num">1</span>디자인 테마</h2>
+        <div class="theme-grid" id="themeGrid">
+          <button class="theme-card is-active" data-theme="carnation" type="button">
+            <div class="theme-thumb theme-thumb--carnation">🌹</div>
+            <div class="theme-name">카네이션</div>
+          </button>
+          <button class="theme-card" data-theme="letter" type="button">
+            <div class="theme-thumb theme-thumb--letter">📝</div>
+            <div class="theme-name">손편지</div>
+          </button>
+          <button class="theme-card" data-theme="pastel" type="button">
+            <div class="theme-thumb theme-thumb--pastel">🌸</div>
+            <div class="theme-name">파스텔 봄</div>
+          </button>
+          <button class="theme-card" data-theme="night" type="button">
+            <div class="theme-thumb theme-thumb--night">✨</div>
+            <div class="theme-name">별빛 감사</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- ② 받는 분 / 보낸 사람 -->
+      <div class="panel-section">
+        <h2 class="section-label"><span class="num">2</span>받는 분 · 보낸 사람</h2>
+        <div class="field">
+          <label class="field-label" for="inpRecipient">받는 분 <span class="hint">예: ○○○ 선생님 / 민지쌤</span></label>
+          <input type="text" id="inpRecipient" class="input" placeholder="○○○ 선생님" maxlength="30" />
+        </div>
+        <div class="field">
+          <label class="field-label" for="inpSender">내 이름</label>
+          <input type="text" id="inpSender" class="input" placeholder="홍길동" maxlength="20" />
+        </div>
+        <div class="field">
+          <label class="field-label">학교 · 학년 반 <span class="hint">선택</span></label>
+          <div class="field-row">
+            <input type="text" id="inpSchool" class="input" placeholder="○○초등학교" maxlength="20" />
+            <input type="text" id="inpClass" class="input" placeholder="○학년 ○반" maxlength="14" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ 메시지 -->
+      <div class="panel-section">
+        <h2 class="section-label"><span class="num">3</span>마음을 담은 메시지</h2>
+        <div class="field">
+          <textarea id="inpMessage" class="textarea" maxlength="200" placeholder="선생님께 전하고 싶은 말을 적어 보세요. 어렵다면 ↓ 추천받기를 눌러 보세요!"></textarea>
+          <div class="char-counter" id="charCounter"><span id="charNow">0</span> / 200</div>
+        </div>
+
+        <!-- 추천 박스 -->
+        <div class="suggest-box">
+          <p class="suggest-title">💡 뭐라고 쓸지 모르겠어요?</p>
+
+          <!-- 학년 필터 -->
+          <div class="filter-row" id="gradeRow">
+            <span class="filter-label">학년</span>
+            <button class="chip" data-grade="저학년" type="button">저학년 (1·2)</button>
+            <button class="chip is-active" data-grade="중학년" type="button">중학년 (3·4)</button>
+            <button class="chip" data-grade="고학년" type="button">고학년 (5·6)</button>
+          </div>
+
+          <!-- 카테고리 필터 -->
+          <div class="filter-row" id="catRow">
+            <span class="filter-label">종류</span>
+            <button class="chip is-active" data-cat="전체" type="button">전체</button>
+            <button class="chip" data-cat="감사" type="button">감사</button>
+            <button class="chip" data-cat="존경" type="button">존경</button>
+            <button class="chip" data-cat="추억" type="button">추억</button>
+            <button class="chip" data-cat="응원" type="button">응원</button>
+            <button class="chip" data-cat="사랑" type="button">사랑</button>
+          </div>
+
+          <!-- 메인 추천 버튼 -->
+          <button class="btn-suggest" id="btnSuggest" type="button">
+            🎲 추천받기
+          </button>
+
+          <!-- 추천 결과 -->
+          <div class="suggestion-result" id="suggestionResult" aria-live="polite">
+            <p class="suggestion-text" id="suggestionText"></p>
+            <div class="suggestion-actions">
+              <button class="btn-mini btn-mini-primary" id="btnUseSuggestion" type="button">✓ 이걸로 쓰기</button>
+              <button class="btn-mini btn-mini-ghost" id="btnAnotherSuggestion" type="button">🔁 다른 문장</button>
+            </div>
+          </div>
+
+          <!-- 살짝 다듬기 힌트 -->
+          <div class="tweak-hint" id="tweakHint">✏️ 한 단어만 바꿔봐도 좋아요. 더 내 말이 돼요.</div>
+
+          <!-- 전체 목록 보기 (확장) -->
+          <details class="example-list-detail">
+            <summary>📚 이 카테고리 문장 전체 보기</summary>
+            <div class="example-list" id="exampleList"></div>
+          </details>
+        </div>
+      </div>
+
+      <!-- ④ 폰트 -->
+      <div class="panel-section">
+        <h2 class="section-label"><span class="num">4</span>메시지 글씨체</h2>
+        <div class="font-grid" id="fontGrid">
+          <button class="font-btn is-active" data-font="Gaegu" style="font-family:'Gaegu',sans-serif;" type="button">가나다<span class="font-name">개구</span></button>
+          <button class="font-btn" data-font="Nanum Pen Script" style="font-family:'Nanum Pen Script',sans-serif;" type="button">가나다<span class="font-name">손편지</span></button>
+          <button class="font-btn" data-font="Hi Melody" style="font-family:'Hi Melody',sans-serif;" type="button">가나다<span class="font-name">멜로디</span></button>
+          <button class="font-btn" data-font="Single Day" style="font-family:'Single Day',sans-serif;" type="button">가나다<span class="font-name">싱글데이</span></button>
+          <button class="font-btn" data-font="East Sea Dokdo" style="font-family:'East Sea Dokdo',sans-serif;" type="button">가나다<span class="font-name">동해</span></button>
+          <button class="font-btn" data-font="Cute Font" style="font-family:'Cute Font',sans-serif;" type="button">가나다<span class="font-name">큐트</span></button>
+        </div>
+      </div>
+
+      <!-- ⑤ 데코 -->
+      <div class="panel-section">
+        <h2 class="section-label"><span class="num">5</span>데코 (선택)</h2>
+        <div class="deco-row" id="decoRow">
+          <button class="deco-toggle is-active" data-deco="flower" type="button">🌹 카네이션</button>
+          <button class="deco-toggle" data-deco="star" type="button">✨ 별</button>
+          <button class="deco-toggle" data-deco="heart" type="button">💗 하트</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== 미리보기 + 액션 (오른쪽) ===== -->
+  <section class="preview-side">
+    <div class="preview-wrap">
+
+      <div class="preview-stage">
+        <article class="card" id="card" data-theme="carnation" aria-label="카드 미리보기">
+          <!-- 데코 레이어 (JS로 SVG 주입) -->
+          <div class="card-deco" id="cardDeco" aria-hidden="true"></div>
+
+          <!-- 카드 내용 -->
+          <div class="card-content">
+            <p class="card-eyebrow">스승의 날 · TEACHER'S DAY</p>
+            <h2 class="card-recipient" id="prevRecipient">○○○ 선생님께</h2>
+            <p class="card-message" id="prevMessage" style="font-family:'Gaegu',sans-serif;">선생님께 전하고 싶은 말을 적어 보세요.</p>
+            <div class="card-signature" id="prevSignature">
+              <span id="prevFromInfo"></span>
+              <span class="from-name" id="prevFromName">○○○ 올림</span>
+            </div>
+          </div>
+
+          <!-- 워터마크 -->
+          <div class="card-watermark">made with 룰루랄라 한기쌤</div>
+        </article>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="btnDownload" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          PNG로 다운로드 (1080×1350)
+        </button>
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="btnPrint" type="button">🖨 인쇄</button>
+          <button class="btn btn-secondary" id="btnReset" type="button">↺ 새로 만들기</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- 토스트 -->
+<div class="toast" id="toast" role="status" aria-live="polite">메시지</div>
+
+<!-- 푸터 -->
+<footer class="app-footer">
+  <p>🌹 스승의 날 응원 카드 메이커 · v1.3</p>
+  <p>made with ♥ by <a href="https://www.youtube.com/@coolhanman" target="_blank" rel="noopener">룰루랄라 한기쌤</a> · <a href="https://github.com/plusiam/carnation-card" target="_blank" rel="noopener">GitHub</a></p>
+</footer>
+
+<script>
+/* ============================================================
+   스승의 날 응원 카드 메이커 - 메인 스크립트
+   ============================================================ */
+
+// ===== 상태 =====
+const state = {
+  theme: 'carnation',
+  font: 'Gaegu',
+  decos: new Set(['flower']),
+  category: '전체',
+  gradeLevel: '중학년',
+  recentMessages: [],     // 직전 추천 제외용 (최대 5개 보관)
+  tweakHintShown: false,  // 살짝 다듬기 힌트 1회성
+  currentSuggestion: '',  // 현재 추천 박스에 표시 중인 원문 (자리표시자 포함)
+};
+
+// ===== 메시지 풀 (학년군 3단계 × 카테고리 5 × 8개 = 120개) =====
+// {선생님} 자리표시자: 받는 분 입력값으로 자동 치환, 빈 값이면 "선생님"으로 대체
+const messagePool = {
+  '저학년': {
+    '감사': [
+      '선생님 정말 고마워요!',
+      '선생님 덕분에 학교가 좋아요.',
+      '선생님 만나서 행복해요.',
+      '가르쳐 주셔서 고맙습니다.',
+      '매일 웃어주셔서 좋아요. 고마워요.',
+      '도와주셔서 정말 감사해요.',
+      '{선생님} 사랑해요. 고마워요!',
+      '우리 {선생님} 최고예요!'
+    ],
+    '존경': [
+      '선생님 진짜 멋있어요!',
+      '선생님 같은 어른이 되고 싶어요.',
+      '{선생님}이 제일 좋아요.',
+      '선생님은 우리 반 영웅이에요.',
+      '선생님 똑똑해요. 대단해요!',
+      '선생님처럼 친절한 사람이 되고 싶어요.',
+      '우리 선생님 자랑하고 싶어요.',
+      '선생님은 정말 멋진 분이에요.'
+    ],
+    '추억': [
+      '선생님이랑 한 게 다 재밌었어요.',
+      '칭찬 받은 날 진짜 기뻤어요.',
+      '운동회 날 너무 신났어요!',
+      '우리 반이 제일 좋아요.',
+      '같이 노래 부른 거 좋았어요.',
+      '선생님이랑 웃은 날이 많아요.',
+      '학교 오는 게 매일 재밌어요.',
+      '선생님이랑 한 거 다 기억할 거예요.'
+    ],
+    '응원': [
+      '선생님 파이팅!',
+      '선생님 항상 행복하세요!',
+      '선생님도 매일 웃으세요.',
+      '선생님 힘내세요!',
+      '선생님 안 아프시면 좋겠어요.',
+      '선생님 매일 즐거우세요.',
+      '우리 {선생님} 응원해요!',
+      '선생님 좋은 하루 보내세요.'
+    ],
+    '사랑': [
+      '선생님 사랑해요!',
+      '선생님 너무너무 좋아요.',
+      '{선생님}이 제일 좋아요.',
+      '우리 선생님 최고!',
+      '선생님 안아드리고 싶어요.',
+      '선생님 보고 싶을 거예요.',
+      '선생님 영원히 좋아할 거예요.',
+      '사랑하는 우리 {선생님}!'
+    ]
+  },
+
+  '중학년': {
+    '감사': [
+      '선생님, 늘 따뜻하게 가르쳐 주셔서 정말 감사해요.',
+      '모르는 걸 끝까지 알려주셔서 감사합니다.',
+      '선생님 덕분에 학교 오는 게 즐거워요. 정말 고마워요.',
+      '힘들 때 옆에 있어 주셔서 감사해요.',
+      '{선생님}께 배운 게 많아요. 진심으로 감사합니다.',
+      '매일 웃으며 맞아주셔서 감사해요.',
+      '잘 가르쳐 주셔서 공부가 재밌어졌어요. 감사합니다.',
+      '{선생님} 만나서 1년이 행복했어요. 고마워요.'
+    ],
+    '존경': [
+      '선생님처럼 멋진 어른이 되고 싶어요.',
+      '선생님은 제가 만난 가장 좋은 선생님이에요.',
+      '선생님의 한 마디가 저에게 큰 힘이 됐어요.',
+      '{선생님}을 보면서 정말 많이 배웠어요.',
+      '선생님은 우리 반의 자랑이에요.',
+      '어른이 되어도 선생님을 잊지 않을 거예요.',
+      '선생님은 정말 대단한 분이세요.',
+      '선생님처럼 따뜻한 사람이 될게요.'
+    ],
+    '추억': [
+      '운동회 때 같이 응원해 주신 거,\n오래 잊지 못할 거예요.',
+      '칭찬 스티커 받은 날이 아직도 기억에 남아요.',
+      '점심시간에 같이 웃었던 순간들이 좋았어요.',
+      '어려운 문제 도와주신 그 시간이 정말 고마웠어요.',
+      '선생님이 읽어주신 이야기들이 재밌었어요.',
+      '우리 반 행사 때마다 함께해 주셔서 행복했어요.',
+      '속상했을 때 들어주신 거 기억나요.\n정말 고마웠어요.',
+      '선생님이랑 보낸 1년이 정말 빨랐어요.'
+    ],
+    '응원': [
+      '선생님도 늘 행복하시길 바라요.',
+      '건강하시고, 매일 웃음 가득하세요!',
+      '우리 선생님 파이팅! 항상 응원해요.',
+      '선생님의 새로운 한 해도 빛나길 바랄게요.',
+      '좋은 일만 가득하세요, {선생님}.',
+      '선생님 덕분에 우리가 자라요. 늘 응원할게요.',
+      '힘드실 때 우리도 선생님께 힘이 되고 싶어요.',
+      '{선생님}께도 좋은 일이 많이 생기길 바라요!'
+    ],
+    '사랑': [
+      '선생님, 정말 사랑해요!',
+      '우리 선생님이 최고예요. ♥',
+      '{선생님} 만나서 정말 다행이에요.',
+      '선생님 덕분에 학교가 좋아졌어요.',
+      '선생님은 우리 반의 보물이에요.',
+      '우리 {선생님} 영원히 사랑할 거예요.',
+      '선생님 생각하면 마음이 따뜻해져요.',
+      '선생님은 제 마음속 1등이에요!'
+    ]
+  },
+
+  '고학년': {
+    '감사': [
+      '선생님과 함께한 시간이 정말 값졌습니다.\n진심으로 감사드려요.',
+      '1년 동안 따뜻하게 보살펴 주셔서 감사합니다.\n잊지 않을게요.',
+      '선생님의 가르침이 저를 한 뼘 자라게 했어요.\n정말 감사해요.',
+      '매일 같은 자리에서 우리를 기다려 주신 그 마음, 감사합니다.',
+      '{선생님}께서 해주신 말씀이 지금도 마음에 남아 있어요.\n고맙습니다.',
+      '어려운 시간을 함께 견뎌 주셔서 감사해요.\n잊지 못할 거예요.',
+      '선생님께 배운 건 공부보다 더 큰 것이었어요.\n진심으로 감사드립니다.',
+      '늘 한결같이 우리를 바라봐 주셔서 감사했어요.'
+    ],
+    '존경': [
+      '선생님처럼 누군가의 마음을 지켜주는 어른이 되고 싶어요.',
+      '{선생님}은 제 인생에서 가장 좋은 선생님이셨어요.',
+      '선생님께서 살아오신 모습 자체가 제게는 가르침이었어요.',
+      '멀리서도 선생님을 떠올리며 살아갈 거예요.',
+      '선생님의 한 마디 한 마디가 제 마음의 길잡이가 되었어요.',
+      '선생님을 통해 좋은 어른의 모습을 처음으로 보았어요.',
+      '어떤 자리에 가도 선생님을 잊지 않겠습니다.',
+      '선생님은 제게 가장 큰 영향을 주신 분이에요.'
+    ],
+    '추억': [
+      '우리 반에서 보낸 매일이 작은 선물 같았어요.',
+      '운동장에서 함께 뛰고 웃던 시간들,\n평생 잊지 못할 거예요.',
+      '어려운 문제를 함께 고민해 주셨던 그 시간이 그리울 거예요.',
+      '선생님께서 들려주신 이야기들이 제 마음에 오래 남아요.',
+      '졸업해도 우리 반에서의 1년은 영원히 빛날 거예요.',
+      '화나고 속상했을 때 들어 주신 그 마음,\n평생 기억할게요.',
+      '함께한 모든 순간이 따뜻한 풍경처럼 남아 있어요.',
+      '졸업식 날에도, 그 후에도, {선생님}을 떠올릴 거예요.'
+    ],
+    '응원': [
+      '선생님께서도 늘 행복하시길, 마음 깊이 바라요.',
+      '새로 만나실 학생들도 선생님을 사랑하게 될 거예요.',
+      '늘 건강하시고, 그 따뜻함을 오래오래 지켜 주세요.',
+      '{선생님}께서 자랑스러워하실 어른으로 성장할게요.',
+      '어디 계시든 선생님이 행복하시길 진심으로 바라요.',
+      '선생님의 한 해 한 해가 더 빛나길 응원합니다.',
+      '우리가 받은 사랑, 다른 누군가에게 돌려주며 살게요.',
+      '힘든 날엔 우리 반을 떠올리며 힘내세요.\n늘 응원할게요.'
+    ],
+    '사랑': [
+      '선생님, 진심으로 사랑하고 존경해요.',
+      '평생 잊지 못할 우리 {선생님}, 정말 사랑합니다.',
+      '선생님 덕분에 학교라는 곳이 따뜻한 기억이 되었어요.',
+      '우리에게 와주셔서 진심으로 감사하고, 사랑해요.',
+      '선생님은 영원히 제 인생의 첫 스승이세요.',
+      '멀리 떨어져 있어도 늘 선생님을 응원하고 사랑할게요.',
+      '선생님과 함께한 1년,\n제 마음의 가장 따뜻한 자리에 있을 거예요.',
+      '사랑하고 또 사랑합니다, 선생님.'
+    ]
+  }
+};
+
+// ===== 자리표시자 처리 =====
+// {선생님} → 받는 분 입력값으로 치환, 입력 없으면 "선생님"으로
+function processPlaceholders(text) {
+  const recipient = (inpRecipient.value || '').trim() || '선생님';
+  return text.replace(/\{선생님\}/g, recipient);
+}
+
+// ===== 무작위 추천 (직전 N개 제외, N은 풀 크기에 적응) =====
+function pickRandomMessage() {
+  const grade = messagePool[state.gradeLevel] || messagePool['중학년'];
+  let pool = [];
+  if (state.category === '전체') {
+    Object.values(grade).forEach(arr => pool.push(...arr));
+  } else {
+    pool = grade[state.category] || [];
+  }
+  if (pool.length === 0) return '';
+
+  // 적응형 메모리: 풀 크기의 절반까지(최소 2, 최대 5)
+  // 풀 8 → 메모리 4 / 풀 40 → 메모리 5 → 후보가 늘 충분히 다양
+  const memoryLimit = Math.max(2, Math.min(5, Math.floor(pool.length / 2)));
+
+  const recent = new Set(state.recentMessages);
+  let candidates = pool.filter(m => !recent.has(m));
+  if (candidates.length === 0) {
+    candidates = pool;
+    state.recentMessages = [];
+  }
+
+  const pick = candidates[Math.floor(Math.random() * candidates.length)];
+  state.recentMessages.push(pick);
+  while (state.recentMessages.length > memoryLimit) state.recentMessages.shift();
+  return pick;
+}
+
+// ===== DOM 참조 =====
+const $ = (id) => document.getElementById(id);
+const card = $('card');
+const cardDeco = $('cardDeco');
+const prevRecipient = $('prevRecipient');
+const prevMessage = $('prevMessage');
+const prevFromInfo = $('prevFromInfo');
+const prevFromName = $('prevFromName');
+const inpRecipient = $('inpRecipient');
+const inpSender = $('inpSender');
+const inpSchool = $('inpSchool');
+const inpClass = $('inpClass');
+const inpMessage = $('inpMessage');
+const charNow = $('charNow');
+const charCounter = $('charCounter');
+const themeGrid = $('themeGrid');
+const fontGrid = $('fontGrid');
+const decoRow = $('decoRow');
+const gradeRow = $('gradeRow');
+const catRow = $('catRow');
+const btnSuggest = $('btnSuggest');
+const suggestionResult = $('suggestionResult');
+const suggestionText = $('suggestionText');
+const btnUseSuggestion = $('btnUseSuggestion');
+const btnAnotherSuggestion = $('btnAnotherSuggestion');
+const tweakHint = $('tweakHint');
+const exampleList = $('exampleList');
+const btnDownload = $('btnDownload');
+const btnPrint = $('btnPrint');
+const btnReset = $('btnReset');
+const toast = $('toast');
+
+// ===== 데코 SVG 정의 (테마별로 다르게 적용) =====
+function decoSVG(themeName, decos) {
+  // 카네이션 SVG (한 송이)
+  const carnation = (x, y, size, rotate) => `
+    <g transform="translate(${x},${y}) rotate(${rotate}) scale(${size})">
+      <path d="M0 22 Q1 32 -1 42" stroke="#4a7c59" stroke-width="1.2" fill="none"/>
+      <ellipse cx="-6" cy="32" rx="5" ry="2.4" fill="#5a8c69" transform="rotate(-30 -6 32)"/>
+      <ellipse cx="0" cy="14" rx="5" ry="7" fill="#5a8c69"/>
+      <path d="M-18 -2 Q-12 -16 0 -14 Q12 -16 18 -2 Q18 12 0 12 Q-18 12 -18 -2" fill="#d63341"/>
+      <path d="M-14 -4 Q-10 -14 0 -12 Q10 -14 14 -4 Q12 8 0 8 Q-12 8 -14 -4" fill="#e04555" opacity="0.85"/>
+      <path d="M-9 -3 Q-5 -10 0 -9 Q5 -10 9 -3 Q7 5 0 5 Q-7 5 -9 -3" fill="#a72431" opacity="0.7"/>
+      <circle cx="0" cy="-2" r="1.6" fill="#ffd700"/>
+    </g>`;
+
+  // 별 SVG
+  const star = (x, y, size, opacity = 1) => {
+    const points = [];
+    for (let i = 0; i < 10; i++) {
+      const r = i % 2 === 0 ? size : size * 0.4;
+      const a = (i * Math.PI) / 5 - Math.PI / 2;
+      points.push(`${(Math.cos(a) * r).toFixed(2)},${(Math.sin(a) * r).toFixed(2)}`);
+    }
+    return `<polygon points="${points.join(' ')}" transform="translate(${x},${y})" fill="#c9a35a" opacity="${opacity}"/>`;
+  };
+
+  // 작은 점 (별빛/꽃잎)
+  const dot = (x, y, r, color, op) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${color}" opacity="${op}"/>`;
+
+  // 하트 SVG
+  const heart = (x, y, size, color) => `
+    <path transform="translate(${x},${y}) scale(${size})"
+      d="M0 6 C-4 0 -10 0 -10 -5 C-10 -9 -6 -11 -3 -9 C-1 -7 0 -5 0 -5 C0 -5 1 -7 3 -9 C6 -11 10 -9 10 -5 C10 0 4 0 0 6 Z"
+      fill="${color}" />`;
+
+  // 작은 잎
+  const leaf = (x, y, size, rotate) => `
+    <ellipse cx="${x}" cy="${y}" rx="${size * 0.35}" ry="${size}" fill="#8db294"
+      opacity="0.5" transform="rotate(${rotate} ${x} ${y})"/>`;
+
+  let parts = [];
+
+  if (themeName === 'carnation') {
+    if (decos.has('flower')) {
+      parts.push(carnation(48, 58, 1.4, -18));
+      parts.push(carnation(312, 392, 1.2, 158));
+      parts.push(carnation(330, 75, 0.9, 24));
+    }
+    if (decos.has('star')) parts.push(star(80, 410, 6, 0.5), star(290, 50, 5, 0.5));
+    if (decos.has('heart')) {
+      parts.push(heart(280, 30, 0.9, '#d63341'));
+      parts.push(heart(60, 420, 0.7, '#d63341'));
+    }
+  } else if (themeName === 'letter') {
+    if (decos.has('flower')) {
+      parts.push(carnation(320, 78, 0.9, 22));
+      parts.push(carnation(50, 400, 1.0, -160));
+    }
+    if (decos.has('star')) parts.push(star(45, 65, 5, 0.4));
+    if (decos.has('heart')) parts.push(heart(310, 410, 0.85, '#a72431'));
+    // 도장 느낌 (붉은 동그라미)
+    parts.push(`<circle cx="318" cy="395" r="22" fill="none" stroke="#a72431" stroke-width="1.4" opacity="0.5"/>`);
+    parts.push(`<text x="318" y="400" text-anchor="middle" fill="#a72431" opacity="0.55" font-size="9" font-family="Jua, sans-serif">감사</text>`);
+  } else if (themeName === 'pastel') {
+    // 흩날리는 꽃잎 점들
+    const pastelDots = [
+      [40, 70, '#ffb6c1'], [320, 60, '#c1aaff'], [50, 380, '#aac8ff'],
+      [330, 410, '#ffc8d8'], [280, 90, '#ffdba0'], [80, 410, '#cfe9c2']
+    ];
+    pastelDots.forEach(([x, y, c]) => parts.push(dot(x, y, 4, c, 0.7)));
+    if (decos.has('flower')) {
+      parts.push(carnation(310, 400, 0.85, 158));
+      parts.push(carnation(50, 70, 0.95, -22));
+    }
+    if (decos.has('heart')) {
+      parts.push(heart(330, 100, 0.7, '#ff8aa8'));
+      parts.push(heart(40, 410, 0.6, '#b8a4e8'));
+    }
+    if (decos.has('star')) parts.push(star(290, 380, 5, 0.6), star(70, 90, 4, 0.5));
+  } else if (themeName === 'night') {
+    // 별빛 패턴 - 항상 표시
+    const stars = [
+      [40, 60, 4, 0.9], [80, 30, 2, 0.7], [310, 50, 3, 0.85],
+      [340, 100, 2, 0.6], [60, 380, 3, 0.75], [320, 410, 4, 0.9],
+      [200, 28, 2.5, 0.7], [140, 380, 2, 0.6], [280, 380, 3, 0.8],
+      [30, 200, 2, 0.5], [340, 240, 2.5, 0.65]
+    ];
+    stars.forEach(([x, y, s, o]) => parts.push(star(x, y, s, o)));
+    // 작은 별 점들
+    for (let i = 0; i < 14; i++) {
+      const x = 20 + Math.random() * 320;
+      const y = 20 + Math.random() * 410;
+      parts.push(dot(x, y, 0.8, '#ffeec8', 0.6));
+    }
+    if (decos.has('flower')) {
+      parts.push(carnation(50, 410, 0.85, -160));
+    }
+    if (decos.has('heart')) parts.push(heart(310, 50, 0.7, '#ffd700'));
+  }
+
+  return `<svg viewBox="0 0 360 450" width="100%" height="100%"
+    preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">${parts.join('')}</svg>`;
+}
+
+// ===== 렌더 =====
+function render() {
+  // 테마
+  card.dataset.theme = state.theme;
+
+  // 받는 분
+  const recipient = (inpRecipient.value || '').trim();
+  prevRecipient.textContent = recipient ? `${recipient}께` : '○○○ 선생님께';
+
+  // 메시지 (자리표시자 치환은 미리보기에 적용)
+  const msg = inpMessage.value;
+  if (msg) {
+    prevMessage.textContent = processPlaceholders(msg);
+    prevMessage.style.opacity = '1';
+  } else {
+    prevMessage.textContent = '여기에 마음을 담은 메시지가 들어갈 거예요.';
+    prevMessage.style.opacity = '0.5';
+  }
+  prevMessage.style.fontFamily = `"${state.font}", sans-serif`;
+
+  // 글자 수
+  const len = msg.length;
+  charNow.textContent = len;
+  charCounter.classList.toggle('is-over', len > 200);
+
+  // 보낸 사람 / 학교 / 학년반 자동 조합
+  const school = (inpSchool.value || '').trim();
+  const klass = (inpClass.value || '').trim();
+  const sender = (inpSender.value || '').trim();
+  const fromInfoParts = [school, klass].filter(Boolean);
+  prevFromInfo.textContent = fromInfoParts.length ? fromInfoParts.join(' ') : '';
+  prevFromName.textContent = sender ? `${sender} 올림` : '제자 올림';
+
+  // 폰트 크기 자동 조정 (메시지 길이 기반)
+  if (msg.length > 130) prevMessage.style.fontSize = '14px';
+  else if (msg.length > 80) prevMessage.style.fontSize = '15px';
+  else prevMessage.style.fontSize = '16px';
+
+  // 데코
+  cardDeco.innerHTML = decoSVG(state.theme, state.decos);
+}
+
+// ===== 카테고리별 전체 목록 렌더 (확장 영역용) =====
+function renderExamples() {
+  const grade = messagePool[state.gradeLevel] || messagePool['중학년'];
+  let list = [];
+  if (state.category === '전체') {
+    Object.values(grade).forEach(arr => list.push(...arr));
+  } else {
+    list = grade[state.category] || [];
+  }
+  exampleList.innerHTML = list.map((m, i) => {
+    const display = processPlaceholders(m);
+    return `<button class="example-item" data-msg="${encodeURIComponent(m)}" type="button">${escapeHtml(display)}</button>`;
+  }).join('');
+}
+
+// ===== 추천 박스 표시 =====
+function showSuggestion() {
+  const pick = pickRandomMessage();
+  if (!pick) return;
+  state.currentSuggestion = pick;
+  suggestionText.textContent = processPlaceholders(pick);
+  suggestionResult.classList.add('is-visible');
+}
+
+// ===== HTML 안전 이스케이프 =====
+function escapeHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+// ===== 살짝 다듬기 힌트 (1회성, 사용자 편집 시 사라짐) =====
+function showTweakHintOnce() {
+  if (state.tweakHintShown) return;
+  state.tweakHintShown = true;
+  tweakHint.classList.add('is-visible');
+
+  // 사용자가 textarea를 편집하기 시작하면 → 즉시 사라짐
+  // (편집 안 해도 안전망으로 8초 후 자동 사라짐)
+  const hideHint = () => {
+    tweakHint.classList.remove('is-visible');
+    inpMessage.removeEventListener('input', hideHint);
+    clearTimeout(safetyTimer);
+  };
+  const safetyTimer = setTimeout(hideHint, 8000);
+  inpMessage.addEventListener('input', hideHint);
+}
+
+// ===== 이벤트 =====
+function bindEvents() {
+  // 테마 선택
+  themeGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('.theme-card');
+    if (!btn) return;
+    state.theme = btn.dataset.theme;
+    themeGrid.querySelectorAll('.theme-card').forEach(b => b.classList.toggle('is-active', b === btn));
+    render();
+  });
+
+  // 폰트 선택
+  fontGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('.font-btn');
+    if (!btn) return;
+    state.font = btn.dataset.font;
+    fontGrid.querySelectorAll('.font-btn').forEach(b => b.classList.toggle('is-active', b === btn));
+    render();
+  });
+
+  // 데코 토글
+  decoRow.addEventListener('click', (e) => {
+    const btn = e.target.closest('.deco-toggle');
+    if (!btn) return;
+    const key = btn.dataset.deco;
+    if (state.decos.has(key)) state.decos.delete(key);
+    else state.decos.add(key);
+    btn.classList.toggle('is-active');
+    render();
+  });
+
+  // 학년 선택
+  gradeRow.addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    state.gradeLevel = btn.dataset.grade;
+    gradeRow.querySelectorAll('.chip').forEach(b => b.classList.toggle('is-active', b === btn));
+    state.recentMessages = []; // 학년 바뀌면 직전 메모리 초기화
+    renderExamples();
+  });
+
+  // 카테고리 선택
+  catRow.addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    state.category = btn.dataset.cat;
+    catRow.querySelectorAll('.chip').forEach(b => b.classList.toggle('is-active', b === btn));
+    state.recentMessages = [];
+    renderExamples();
+  });
+
+  // 🎲 추천받기 / 🔁 다른 문장 (동일 동작)
+  btnSuggest.addEventListener('click', showSuggestion);
+  btnAnotherSuggestion.addEventListener('click', showSuggestion);
+
+  // ✓ 이걸로 쓰기 (textarea로 적용)
+  btnUseSuggestion.addEventListener('click', () => {
+    if (!state.currentSuggestion) return;
+    inpMessage.value = state.currentSuggestion; // 원문 그대로 (자리표시자 포함)
+    // input 이벤트 대신 render() 직접 호출
+    // (input 이벤트 발생 시 다듬기 힌트가 즉시 사라지는 부작용 방지)
+    render();
+    suggestionResult.classList.remove('is-visible');
+    showTweakHintOnce();
+    // 미리보기 영역으로 부드럽게 스크롤 (모바일 UX)
+    if (window.matchMedia('(max-width: 979px)').matches) {
+      document.querySelector('.preview-side').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      inpMessage.focus();
+    }
+  });
+
+  // 전체 목록(확장)에서 클릭 → 메시지에 입력
+  exampleList.addEventListener('click', (e) => {
+    const btn = e.target.closest('.example-item');
+    if (!btn) return;
+    const text = decodeURIComponent(btn.dataset.msg || '');
+    if (!text) return;
+    inpMessage.value = text;
+    inpMessage.dispatchEvent(new Event('input'));
+    inpMessage.focus();
+  });
+
+  // 입력 → 미리보기 갱신
+  ['inpRecipient','inpSender','inpSchool','inpClass','inpMessage'].forEach(id => {
+    $(id).addEventListener('input', render);
+  });
+
+  // 다운로드
+  btnDownload.addEventListener('click', downloadPNG);
+
+  // 인쇄
+  btnPrint.addEventListener('click', () => window.print());
+
+  // 초기화
+  btnReset.addEventListener('click', () => {
+    if (!confirm('카드 내용을 모두 지우시겠어요?')) return;
+    inpRecipient.value = '';
+    inpSender.value = '';
+    inpSchool.value = '';
+    inpClass.value = '';
+    inpMessage.value = '';
+    state.theme = 'carnation';
+    state.font = 'Gaegu';
+    state.decos = new Set(['flower']);
+    state.category = '전체';
+    state.gradeLevel = '중학년';
+    state.recentMessages = [];
+    state.currentSuggestion = '';
+    suggestionResult.classList.remove('is-visible');
+    tweakHint.classList.remove('is-visible');
+    themeGrid.querySelectorAll('.theme-card').forEach(b =>
+      b.classList.toggle('is-active', b.dataset.theme === 'carnation'));
+    fontGrid.querySelectorAll('.font-btn').forEach(b =>
+      b.classList.toggle('is-active', b.dataset.font === 'Gaegu'));
+    decoRow.querySelectorAll('.deco-toggle').forEach(b =>
+      b.classList.toggle('is-active', b.dataset.deco === 'flower'));
+    gradeRow.querySelectorAll('.chip').forEach(b =>
+      b.classList.toggle('is-active', b.dataset.grade === '중학년'));
+    catRow.querySelectorAll('.chip').forEach(b =>
+      b.classList.toggle('is-active', b.dataset.cat === '전체'));
+    renderExamples();
+    render();
+    showToast('새 카드를 시작했어요');
+  });
+}
+
+// ===== PNG 다운로드 =====
+async function downloadPNG() {
+  if (!inpMessage.value.trim()) {
+    showToast('메시지를 먼저 작성해 주세요');
+    inpMessage.focus();
+    return;
+  }
+
+  btnDownload.disabled = true;
+  const originalText = btnDownload.innerHTML;
+  btnDownload.innerHTML = '🌹 카드 만드는 중...';
+
+  try {
+    // 폰트 로딩 완료 대기 (한글 깨짐 방지)
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+    // 폰트 적용 안정화 대기
+    await new Promise(r => setTimeout(r, 100));
+
+    // 360 → 1080 = 3배 캡처
+    // PNG 다운로드 시 워터마크는 캡처에서 제외 (web에는 표시, 출력물에는 미표시)
+    const canvas = await html2canvas(card, {
+      scale: 3,
+      useCORS: true,
+      backgroundColor: null,
+      logging: false,
+      width: 360,
+      height: 450,
+      ignoreElements: (el) => el.classList && el.classList.contains('card-watermark'),
+    });
+
+    // 다운로드
+    const recipient = (inpRecipient.value || '선생님').trim().replace(/[\\/:*?"<>|]/g, '');
+    const filename = `스승의날_응원카드_${recipient}.png`;
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('카드를 저장했어요 🌹');
+  } catch (err) {
+    console.error(err);
+    showToast('저장 중 오류가 났어요. 다시 시도해 주세요.');
+  } finally {
+    btnDownload.disabled = false;
+    btnDownload.innerHTML = originalText;
+  }
+}
+
+// ===== 토스트 =====
+let toastTimer;
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('is-visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2400);
+}
+
+// ===== 초기화 =====
+function init() {
+  bindEvents();
+  renderExamples();
+  render();
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

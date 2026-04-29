@@ -701,12 +701,28 @@ body {
 .app-footer a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 
 /* ---------- 인쇄 스타일 ---------- */
+@page { size: A4 portrait; margin: 0; }
 @media print {
+  html, body { margin: 0; padding: 0; height: 100%; }
   body { background: white; }
   .app-header, .app-footer, .control-side, .actions { display: none !important; }
-  .app-main { display: block; padding: 0; }
-  .preview-wrap { padding: 0; }
-  .card { box-shadow: none; page-break-inside: avoid; }
+  .app-main { display: block; padding: 0; margin: 0; width: 100%; height: 100%; }
+  .preview-side { width: 100%; height: 100%; }
+  .preview-wrap { padding: 0; margin: 0; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .preview-stage { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transform: none !important; }
+  .card {
+    box-shadow: none;
+    page-break-inside: avoid;
+    width: 190mm !important;
+    height: 237mm !important;
+    border-radius: 12px;
+  }
+  .card-content { padding: 48px 44px 36px !important; inset: 0 !important; margin: 16px !important; }
+  .card-eyebrow   { font-size: 13px !important; }
+  .card-recipient { font-size: 32px !important; margin-bottom: 24px !important; }
+  .card-message   { font-size: 22px !important; line-height: 1.75 !important; }
+  .card-signature { font-size: 16px !important; }
+  .card-signature .from-name { font-size: 20px !important; }
   .card-watermark { display: none !important; }
 }
 /* 포스트잇(76×95mm) 인쇄 모드 */

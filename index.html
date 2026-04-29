@@ -461,6 +461,36 @@ body {
   letter-spacing: -0.02em;
 }
 
+/* ---------- 글씨 크기 선택 ---------- */
+.size-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.size-btn {
+  padding: 10px 6px;
+  background: #fdfaf3;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  transition: all 0.15s;
+  text-align: center;
+  line-height: 1;
+  font-family: "Noto Sans KR", sans-serif;
+}
+.size-btn:hover { border-color: var(--border-strong); }
+.size-btn.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.size-label {
+  display: block;
+  font-size: 10px;
+  color: var(--text-mute);
+  margin-top: 3px;
+  letter-spacing: -0.02em;
+}
+
 /* ---------- 데코 토글 ---------- */
 .deco-row {
   display: flex;
@@ -893,9 +923,32 @@ body {
         </div>
       </div>
 
-      <!-- ⑤ 데코 -->
+      <!-- ⑤ 글씨 크기 -->
       <div class="panel-section">
-        <h2 class="section-label"><span class="num">5</span>데코 (선택)</h2>
+        <h2 class="section-label"><span class="num">5</span>메시지 글씨 크기</h2>
+        <div class="size-grid" id="sizeGrid">
+          <button class="size-btn" data-size="13" type="button">
+            <span style="font-size:11px">가나</span>
+            <span class="size-label">S · 작게</span>
+          </button>
+          <button class="size-btn is-active" data-size="16" type="button">
+            <span style="font-size:14px">가나</span>
+            <span class="size-label">M · 보통</span>
+          </button>
+          <button class="size-btn" data-size="20" type="button">
+            <span style="font-size:18px">가나</span>
+            <span class="size-label">L · 크게</span>
+          </button>
+          <button class="size-btn" data-size="24" type="button">
+            <span style="font-size:22px">가나</span>
+            <span class="size-label">XL · 아주크게</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ⑥ 데코 -->
+      <div class="panel-section">
+        <h2 class="section-label"><span class="num">6</span>데코 (선택)</h2>
         <div class="deco-row" id="decoRow">
           <button class="deco-toggle is-active" data-deco="flower" type="button">🌹 카네이션</button>
           <button class="deco-toggle" data-deco="star" type="button">✨ 별</button>
@@ -976,6 +1029,7 @@ body {
 const state = {
   theme: 'carnation',
   font: 'Gaegu',
+  fontSize: 16,           // 메시지 글씨 크기 (px): 13 / 16 / 20 / 24
   decos: new Set(['flower']),
   category: '전체',
   gradeLevel: '중학년',
@@ -1350,10 +1404,10 @@ function render() {
   prevFromInfo.textContent = fromInfoParts.length ? fromInfoParts.join(' ') : '';
   prevFromName.textContent = sender ? `${sender} 올림` : '제자 올림';
 
-  // 폰트 크기 자동 조정 (메시지 길이 기반)
-  if (msg.length > 130) prevMessage.style.fontSize = '14px';
-  else if (msg.length > 80) prevMessage.style.fontSize = '15px';
-  else prevMessage.style.fontSize = '16px';
+  // 글씨 크기 (사용자 선택값 우선, 단 XL일 때 장문이면 한 단계 축소)
+  let fs = state.fontSize;
+  if (fs >= 20 && msg.length > 100) fs = fs - 4;
+  prevMessage.style.fontSize = `${fs}px`;
 
   // 데코
   cardDeco.innerHTML = decoSVG(state.theme, state.decos);
@@ -1458,6 +1512,15 @@ function bindEvents() {
     render();
   });
 
+  // 글씨 크기 선택
+  $('sizeGrid').addEventListener('click', (e) => {
+    const btn = e.target.closest('.size-btn');
+    if (!btn) return;
+    state.fontSize = Number(btn.dataset.size);
+    $('sizeGrid').querySelectorAll('.size-btn').forEach(b => b.classList.toggle('is-active', b === btn));
+    render();
+  });
+
   // 데코 토글
   decoRow.addEventListener('click', (e) => {
     const btn = e.target.closest('.deco-toggle');
@@ -1544,6 +1607,7 @@ function bindEvents() {
     inpMessage.value = '';
     state.theme = 'carnation';
     state.font = 'Gaegu';
+    state.fontSize = 16;
     state.decos = new Set(['flower']);
     state.category = '전체';
     state.gradeLevel = '중학년';
@@ -1556,6 +1620,8 @@ function bindEvents() {
       b.classList.toggle('is-active', b.dataset.theme === 'carnation'));
     fontGrid.querySelectorAll('.font-btn').forEach(b =>
       b.classList.toggle('is-active', b.dataset.font === 'Gaegu'));
+    $('sizeGrid').querySelectorAll('.size-btn').forEach(b =>
+      b.classList.toggle('is-active', b.dataset.size === '16'));
     decoRow.querySelectorAll('.deco-toggle').forEach(b =>
       b.classList.toggle('is-active', b.dataset.deco === 'flower'));
     gradeRow.querySelectorAll('.chip').forEach(b =>

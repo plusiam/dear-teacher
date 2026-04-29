@@ -657,14 +657,44 @@ body {
 }
 .btn-primary:hover { background: var(--accent-deep); transform: translateY(-1px); }
 .btn-primary:active { transform: translateY(0); }
-.btn-primary:disabled { opacity: 0.5; cursor: wait; transform: none; }
+.btn-primary:disabled { opacity: 0.38; cursor: not-allowed; transform: none; box-shadow: none; }
 .btn-secondary {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
 }
 .btn-secondary:hover { border-color: var(--border-strong); background: #fdfaf3; }
+.btn-secondary:disabled { opacity: 0.38; cursor: not-allowed; }
+.btn-secondary:disabled:hover { border-color: var(--border); background: var(--surface); transform: none; }
 .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* ---------- 출력 잠금 안내 ---------- */
+.output-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #fffbf0;
+  border: 1px dashed var(--gold);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: #7a5a20;
+  line-height: 1.45;
+  transition: opacity 0.3s, max-height 0.3s;
+  max-height: 80px;
+  overflow: hidden;
+}
+.output-notice.is-hidden {
+  opacity: 0;
+  max-height: 0;
+  padding: 0;
+  border: none;
+  margin: 0;
+}
+/* 모바일: actions가 화면 하단에 고정되지 않도록 충분한 여백 */
+@media (max-width: 979px) {
+  .actions { max-width: 100%; }
+}
 
 /* ---------- 토스트 ---------- */
 .toast {
@@ -902,17 +932,21 @@ body {
       </div>
 
       <div class="actions">
-        <button class="btn btn-primary" id="btnDownload" type="button">
+        <!-- 입력 전 안내 문구 -->
+        <p class="output-notice" id="outputNotice" role="status">
+          ✏️ <span>받는 분과 메시지를 입력하면<br>다운로드·인쇄 버튼이 활성화돼요</span>
+        </p>
+        <button class="btn btn-primary" id="btnDownload" type="button" disabled>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           PNG 다운로드 (1080×1350)
         </button>
-        <button class="btn btn-secondary" id="btnDownloadPostit" type="button">
+        <button class="btn btn-secondary" id="btnDownloadPostit" type="button" disabled>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           포스트잇 PNG (304×380)
         </button>
         <div class="btn-row">
-          <button class="btn btn-secondary" id="btnPrint" type="button">🖨 A4 인쇄</button>
-          <button class="btn btn-secondary" id="btnPrintPostit" type="button">🗒 포스트잇 인쇄</button>
+          <button class="btn btn-secondary" id="btnPrint" type="button" disabled>🖨 A4 인쇄</button>
+          <button class="btn btn-secondary" id="btnPrintPostit" type="button" disabled>🗒 포스트잇 인쇄</button>
         </div>
         <div class="btn-row">
           <button class="btn btn-secondary" id="btnReset" type="button">↺ 새로 만들기</button>
@@ -1323,6 +1357,37 @@ function render() {
 
   // 데코
   cardDeco.innerHTML = decoSVG(state.theme, state.decos);
+
+  // 출력 버튼 잠금 — 받는 분 + 메시지 모두 입력돼야 활성화
+  updateOutputLock();
+}
+
+// ===== 출력 버튼 잠금/해제 =====
+function updateOutputLock() {
+  const hasRecipient = (inpRecipient.value || '').trim().length > 0;
+  const hasMessage   = (inpMessage.value   || '').trim().length > 0;
+  const ready = hasRecipient && hasMessage;
+
+  const outputBtns = [
+    $('btnDownload'), $('btnDownloadPostit'),
+    $('btnPrint'),    $('btnPrintPostit')
+  ];
+  outputBtns.forEach(btn => { btn.disabled = !ready; });
+
+  const notice = $('outputNotice');
+  if (ready) {
+    notice.classList.add('is-hidden');
+  } else {
+    notice.classList.remove('is-hidden');
+    // 어떤 항목이 빠졌는지 구체적으로 안내
+    if (!hasRecipient && !hasMessage) {
+      notice.querySelector('span').textContent = '받는 분과 메시지를 입력하면 다운로드·인쇄 버튼이 활성화돼요';
+    } else if (!hasRecipient) {
+      notice.querySelector('span').textContent = '받는 분 이름을 입력해 주세요';
+    } else {
+      notice.querySelector('span').textContent = '메시지를 입력해 주세요';
+    }
+  }
 }
 
 // ===== 카테고리별 전체 목록 렌더 (확장 영역용) =====
@@ -1484,6 +1549,7 @@ function bindEvents() {
     state.gradeLevel = '중학년';
     state.recentMessages = [];
     state.currentSuggestion = '';
+    state.tweakHintShown = false;
     suggestionResult.classList.remove('is-visible');
     tweakHint.classList.remove('is-visible');
     themeGrid.querySelectorAll('.theme-card').forEach(b =>

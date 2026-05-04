@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>스승의 날 응원 카드 메이커 🌹 | 룰루랄라 한기쌤</title>
-<meta name="description" content="제자가 선생님께 마음을 전하는 스승의 날 응원 카드를 1분 만에 만들어 PNG로 다운로드하세요. 카네이션 클래식, 손편지 노트, 파스텔 봄, 별빛 감사 4가지 테마." />
+<title>스승의 날 감사 카드 메이커 🌹 | 룰루랄라 한기쌤</title>
+<meta name="description" content="제자가 선생님께 진심을 전하는 스승의 날 감사 카드를 만들어 PNG로 다운로드하세요. 카네이션 클래식, 손편지 노트, 파스텔 봄, 별빛 감사 4가지 테마." />
 <meta name="theme-color" content="#D63341" />
-<meta property="og:title" content="스승의 날 응원 카드 메이커 🌹" />
-<meta property="og:description" content="제자가 선생님께 마음을 전하는 카드를 1분 만에 만들어 보세요." />
+<meta property="og:title" content="스승의 날 감사 카드 메이커 🌹" />
+<meta property="og:description" content="제자가 선생님께 진심을 전하는 감사 카드를 만들어 보세요." />
 <meta property="og:type" content="website" />
 
 <!-- 한글 손글씨 폰트 (메시지용) + 본문 폰트 -->
@@ -23,7 +23,7 @@
 
 <style>
 /* ========================================================
-   스승의 날 응원 카드 메이커
+   스승의 날 감사 카드 메이커
    - 단일 HTML, GitHub Pages 배포
    - 4가지 테마: carnation / letter / pastel / night
    - made with 룰루랄라 한기쌤
@@ -628,7 +628,7 @@ body {
   margin: 14px;
   padding: 30px 28px 24px;
   inset: 0;
-  background: rgba(255,253,248,0.4);
+  background: rgba(255,253,248,0.78);
   backdrop-filter: blur(0.5px);
 }
 
@@ -800,8 +800,8 @@ body {
 <!-- ========== 헤더 ========== -->
 <header class="app-header">
   <div class="brand-pill">🌹 made with 룰루랄라 한기쌤</div>
-  <h1 class="app-title">스승의 날 <span class="red">응원 카드</span> 만들기</h1>
-  <p class="app-subtitle">선생님께 마음을 담아 — 1분 안에 만들어 PNG로 받으세요</p>
+  <h1 class="app-title">스승의 날 <span class="red">감사 카드</span> 만들기</h1>
+  <p class="app-subtitle">선생님께 진심을 전하는 감사 카드를 만들어 보세요</p>
 </header>
 
 <!-- ========== 메인 ========== -->
@@ -970,7 +970,7 @@ body {
 
           <!-- 카드 내용 -->
           <div class="card-content">
-            <p class="card-eyebrow">스승의 날 · TEACHER'S DAY</p>
+            <p class="card-eyebrow">스승의 날</p>
             <h2 class="card-recipient" id="prevRecipient">○○○ 선생님께</h2>
             <p class="card-message" id="prevMessage" style="font-family:'Gaegu',sans-serif;">선생님께 전하고 싶은 말을 적어 보세요.</p>
             <div class="card-signature" id="prevSignature">
@@ -1016,13 +1016,13 @@ body {
 
 <!-- 푸터 -->
 <footer class="app-footer">
-  <p>🌹 스승의 날 응원 카드 메이커 · v1.4</p>
+  <p>🌹 스승의 날 감사 카드 메이커 · v1.5</p>
   <p>made with ♥ by <a href="https://www.youtube.com/@coolhanman" target="_blank" rel="noopener">룰루랄라 한기쌤</a> · <a href="https://github.com/plusiam/carnation-card" target="_blank" rel="noopener">GitHub</a></p>
 </footer>
 
 <script>
 /* ============================================================
-   스승의 날 응원 카드 메이커 - 메인 스크립트
+   스승의 날 감사 카드 메이커 - 메인 스크립트
    ============================================================ */
 
 // ===== 상태 =====
@@ -1311,14 +1311,15 @@ function decoSVG(themeName, decos) {
 
   if (themeName === 'carnation') {
     if (decos.has('flower')) {
-      parts.push(carnation(48, 58, 1.4, -18));
-      parts.push(carnation(312, 392, 1.2, 158));
-      parts.push(carnation(330, 75, 0.9, 24));
+      parts.push(`<g opacity="0.45">`);
+      parts.push(carnation(24, 30, 1.05, -22));
+      parts.push(carnation(336, 422, 1.0, 158));
+      parts.push(`</g>`);
     }
-    if (decos.has('star')) parts.push(star(80, 410, 6, 0.5), star(290, 50, 5, 0.5));
+    if (decos.has('star')) parts.push(star(28, 410, 5, 0.45), star(332, 42, 4.5, 0.45));
     if (decos.has('heart')) {
-      parts.push(heart(280, 30, 0.9, '#d63341'));
-      parts.push(heart(60, 420, 0.7, '#d63341'));
+      parts.push(heart(332, 32, 0.75, '#d63341'));
+      parts.push(heart(28, 420, 0.65, '#d63341'));
     }
   } else if (themeName === 'letter') {
     if (decos.has('flower')) {
@@ -1666,7 +1667,7 @@ async function downloadPNG() {
   try {
     const canvas = await captureCard(3);
     const link = document.createElement('a');
-    link.download = `스승의날_응원카드_${recipientFilename()}.png`;
+    link.download = `스승의날_감사카드_${recipientFilename()}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
     showToast('카드를 저장했어요 🌹');
@@ -1767,7 +1768,7 @@ function getComputedCardStyles() {
     .card { background: linear-gradient(180deg,#fff8ed 0%,#fbeee4 100%); color:#4a2820; }
     .card-eyebrow { color:#a72431; }
     .card-recipient { color:#6b1d24; }
-    .card-content { border:1px solid rgba(214,51,65,0.18); border-radius:10px; margin:6px; inset:0; background:rgba(255,253,248,0.4); }`;
+    .card-content { border:1px solid rgba(214,51,65,0.18); border-radius:10px; margin:6px; inset:0; background:rgba(255,253,248,0.78); }`;
   if (t === 'letter') return `
     .card { background: repeating-linear-gradient(180deg,transparent 0,transparent 23px,rgba(180,150,90,0.18) 23px,rgba(180,150,90,0.18) 24px),linear-gradient(180deg,#f7eeda 0%,#efe4c7 100%); color:#3a2a18; }
     .card-eyebrow { color:#8a5a2a; }
